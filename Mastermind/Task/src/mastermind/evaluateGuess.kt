@@ -4,9 +4,12 @@ data class Evaluation(val positions: Int, val letters: Int)
 
 fun evaluateGuess(secret: String, guess: String): Evaluation {
     //println("secret: $secret \nguess:  $guess")
-    val (amountOf, currentSecret, currentGuess) = positionsGuessedCorrectly(secret, guess)
-    val numberOf = lettersGuessedCorrectly(currentSecret, currentGuess)
-    return Evaluation(amountOf, numberOf)
+    val (correctPositionsAmount, reducedSecret, reducedGuess) =
+            positionsGuessedCorrectly(secret, guess)
+    val correctLettersAmount =
+            lettersGuessedCorrectly(reducedSecret, reducedGuess)
+
+    return Evaluation(correctPositionsAmount, correctLettersAmount)
 }
 
 fun lettersGuessedCorrectly(secret: String, guess: String): Int {
@@ -19,28 +22,32 @@ fun lettersGuessedCorrectly(secret: String, guess: String): Int {
 }
 
 fun positionsGuessedCorrectly(secret: String, guess: String): Triple<Int, String, String> {
-    var correctGuesses = 0
-    val indexesToRemove = mutableListOf<Int>()
-    for (guessedPair in guess.withIndex()) {
-        val guessIndex = guessedPair.index
-        val secretLetter = secret.get(guessIndex)
-        if (guessedPair.value == secretLetter) {
-            indexesToRemove.add(guessIndex)
-            correctGuesses++
-        }
-    }
+    val indexesToRemove = identifyIndexesToRemove(guess, secret)
+    var (reducedSecret, reducedGuess) =
+            reduceStringsRemovingIndexesFrom(secret, guess, indexesToRemove)
 
-    var (currentSecret, currentGuess) =
-            generateReducedStringsRemovingMatchLetters(secret, guess, indexesToRemove)
-
-    return Triple(correctGuesses, currentSecret, currentGuess)
+    val correctGuesses = indexesToRemove.size
+    return Triple(correctGuesses, reducedSecret, reducedGuess)
 }
 
-private fun generateReducedStringsRemovingMatchLetters(secret: String,
-                                                       guess: String,
-                                                       indexesToRemove: MutableList<Int>): Pair<String, String> {
+private fun identifyIndexesToRemove(guess: String, secret: String): MutableList<Int> {
+    val indexesToRemove = mutableListOf<Int>()
+    for (guessedPair in guess.withIndex()) {
+        val guessedIndex = guessedPair.index
+        val secretLetter = secret.get(guessedIndex)
+        if (guessedPair.value == secretLetter) {
+            indexesToRemove.add(guessedIndex)
+        }
+    }
+    return indexesToRemove
+}
+
+private fun reduceStringsRemovingIndexesFrom(secret: String,
+                                             guess: String,
+                                             indexesToRemove: MutableList<Int>): Pair<String, String> {
     var currentSecret = secret
     var currentGuess = guess
+    //Need to start removing from higher to lower, otherwise it could access an unknown index
     indexesToRemove.reversed().forEach {
         currentGuess = currentGuess.replaceRange(it, it + 1, "")
         currentSecret = currentSecret.replaceRange(it, it + 1, "")
