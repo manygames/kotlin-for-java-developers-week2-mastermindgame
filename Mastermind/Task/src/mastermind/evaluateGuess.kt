@@ -4,12 +4,13 @@ data class Evaluation(val positions: Int, val letters: Int)
 
 fun evaluateGuess(secret: String, guess: String): Evaluation {
     //println("secret: $secret \nguess:  $guess")
-    val (correctPositionsAmount, reducedSecret, reducedGuess) =
+    val (correctLetterAndPositionsAmount, reducedSecret, reducedGuess) =
             positionsGuessedCorrectly(secret, guess)
+
     val correctLettersAmount =
             lettersGuessedCorrectly(reducedSecret, reducedGuess)
 
-    return Evaluation(correctPositionsAmount, correctLettersAmount)
+    return Evaluation(correctLetterAndPositionsAmount, correctLettersAmount)
 }
 
 fun lettersGuessedCorrectly(secret: String, guess: String): Int {
@@ -47,7 +48,9 @@ private fun reduceStringsRemovingIndexesFrom(secret: String,
                                              indexesToRemove: MutableList<Int>): Pair<String, String> {
     var currentSecret = secret
     var currentGuess = guess
-    //Need to start removing from higher to lower, otherwise it could access an unknown index
+
+    //Need to reverse the list to start removing from higher to lower index
+    //otherwise it could access an unknown index value
     indexesToRemove.reversed().forEach {
         currentGuess = currentGuess.replaceRange(it, it + 1, "")
         currentSecret = currentSecret.replaceRange(it, it + 1, "")
