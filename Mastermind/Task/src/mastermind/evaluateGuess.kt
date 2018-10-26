@@ -14,12 +14,15 @@ fun evaluateGuess(secret: String, guess: String): Evaluation {
 }
 
 fun lettersGuessedCorrectly(secret: String, guess: String): Int {
+    //var noDuplicatesGuess = ""
+    //guess.groupBy { letter -> letter }.keys.forEach{ letter -> noDuplicatesGuess+=letter}
     var correctGuesses = 0
-    var noDuplicatesGuess = ""
-    guess.groupBy { letter -> letter }.keys.forEach{ letter -> noDuplicatesGuess+=letter}
-    for (ch in noDuplicatesGuess) {
-        if (secret.contains(ch))
+    var mutableSecret = secret
+    for (ch in guess) {
+        if (mutableSecret.contains(ch)) {
+            mutableSecret = mutableSecret.replaceFirst(ch.toString(), "", true)
             correctGuesses++
+        }
     }
     return correctGuesses
 }

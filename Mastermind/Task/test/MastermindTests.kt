@@ -29,7 +29,7 @@ class MastermindTests {
     fun testLetters() = testEvaluation("DAEF", "FECA", 0, 3)
 
     @Test
-    fun testDuplicates() = testEvaluation("CFDF", "FCCD", 0, 3)
+    fun testDuplicates1() = testEvaluation("CFDF", "FCCD", 0, 3)
 
     @Test
     fun testDuplicates2() = testEvaluation("BBDC", "DFBB", 0, 3)
