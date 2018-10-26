@@ -15,7 +15,9 @@ fun evaluateGuess(secret: String, guess: String): Evaluation {
 
 fun lettersGuessedCorrectly(secret: String, guess: String): Int {
     var correctGuesses = 0
-    for (ch in guess) {
+    var noDuplicatesGuess = ""
+    guess.groupBy { letter -> letter }.keys.forEach{ letter -> noDuplicatesGuess+=letter}
+    for (ch in noDuplicatesGuess) {
         if (secret.contains(ch))
             correctGuesses++
     }

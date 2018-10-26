@@ -28,6 +28,12 @@ class MastermindTests {
     @Test
     fun testLetters() = testEvaluation("DAEF", "FECA", 0, 3)
 
+    @Test
+    fun testDuplicates() = testEvaluation("CFDF", "FCCD", 0, 3)
+
+    @Test
+    fun testDuplicates2() = testEvaluation("BBDC", "DFBB", 0, 3)
+
     // repeated letters
     @Test
     fun testSample() = testEvaluation("AABC", "ADFE", 1, 0)
